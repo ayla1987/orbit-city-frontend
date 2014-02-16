@@ -1,0 +1,41 @@
+﻿@using OrbitCity.API.DTO
+
+@model List<TdDevice>
+
+<h2>Device List</h2>
+<table>
+    @foreach (TdDevice Td in Model)
+    {
+        <tr>
+            <td>@Td.name</td>
+            <td><a href="#" data-type="on" data-id="@Td.id">On</a></td>
+            <td><a href="#" data-type="off" data-id="@Td.id">Off</a></td>
+            @if (Td.type == "Dimmer")
+            {
+                <td><input data-id="@Td.id" type="range"  min="0" max="100" step="5" value="100" /></td>
+            }
+        </tr>
+    }
+</table>
+
+@section scripts
+{
+    <script>
+        $('input[type=range]').on('change', function (e) {
+            var value = $(this).val();
+            var id = $(this).data('id');
+            $.get('/tddevice/dim/' + id + '?Lvl=' + value);
+        });
+        //TODO: make trigger for last value
+
+        $('a[data-type=on]').on('click', function (e) {
+            var id = $(this).data('id');
+            $.get('/tddevice/on/' + id);
+        });
+
+        $('a[data-type=off]').on('click', function (e) {
+            var id = $(this).data('id');
+            $.get('/tddevice/off/' + id);
+        });
+    </script>
+}
